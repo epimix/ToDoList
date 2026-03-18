@@ -2,6 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Todo, Priority } from '../models/Todo';
+import { useAppDispatch } from '../hooks';
+import { plus, minus } from '../slices/menuSlice';
+
 
 interface TodoItemProps {
     item: Todo;
@@ -20,11 +23,21 @@ export const TodoItem = ({ item, onToggle, onDelete, onSelect }: TodoItemProps) 
         }
     };
 
+    const dispatch = useAppDispatch();
+
     return (
         <View style={styles.todoCard}>
             <TouchableOpacity
                 style={styles.todoInfo}
-                onPress={() => onToggle(item.id)}
+                onPress={() => {
+                    onToggle(item.id);
+
+                    if (!item.completed) {
+                        dispatch(plus());
+                    } else {
+                        dispatch(minus());
+                    }
+                }}
             >
                 <Ionicons
                     name={item.completed ? 'checkbox' : 'square-outline'}

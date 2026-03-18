@@ -1,10 +1,20 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Button } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "../hooks";
+import { plus, reset, minus , selectCount } from "../slices/menuSlice";
+
 
 export default function AboutScreen() {
+    const dispatch = useDispatch();
+    const count = useAppSelector(selectCount);
+
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+            <Button title="Plus" onPress={() => dispatch(plus())} />
+            <Button title="Reset" onPress={() => dispatch(reset())} />
+            <Button title="Minus" onPress={() => dispatch(minus())} />
             <View style={styles.header}>
                 <Ionicons name="information-circle" size={80} color="#007AFF" />
                 <Text style={styles.title}>Про додаток</Text>

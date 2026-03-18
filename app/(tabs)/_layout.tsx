@@ -2,6 +2,8 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs } from "expo-router";
 import React from "react";
+import {useAppSelector} from "../hooks";
+import {selectCount} from "../slices/menuSlice";
 
 function TabBarIcon(props: {
     name: React.ComponentProps<typeof FontAwesome>["name"];
@@ -11,6 +13,8 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
+    const count = useAppSelector(selectCount);
+
     return (
         <Tabs
             screenOptions={{
@@ -65,6 +69,7 @@ export default function TabLayout() {
                 name="about"
                 options={{
                     title: "About",
+                    tabBarBadge: count ? count : undefined,
                     headerTitle: "About App",
                     tabBarIcon: ({ color, focused }) => (
                         <TabBarIcon name="newspaper-o" color={color} />
