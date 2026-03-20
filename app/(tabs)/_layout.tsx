@@ -76,6 +76,19 @@ export default function TabLayout() {
                     ),
                 }}
             />
+            <Tabs.Screen
+                name="animations"
+                options={{
+                    title: "Animations",
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons
+                            name={focused ? "color-palette" : "color-palette-outline"}
+                            color={color}
+                            size={24}
+                        />
+                    ),
+                }}
+            />
         </Tabs>
     );
 }
