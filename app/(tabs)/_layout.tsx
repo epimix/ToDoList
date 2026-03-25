@@ -89,6 +89,32 @@ export default function TabLayout() {
                     ),
                 }}
             />
+            <Tabs.Screen   
+                name="db"
+                options={{
+                    title: "DB",
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons
+                            name={focused ? "cloud" : "cloud-outline"}
+                            color={color}
+                            size={24}
+                        />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="gestures  "
+                options={{
+                    title: "Gestures",
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons
+                            name={focused ? "hand-left" : "hand-left-outline"}
+                            color={color}
+                            size={24}
+                        />
+                    ),
+                }}
+            />
         </Tabs>
     );
 }

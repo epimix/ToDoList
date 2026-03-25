@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Alert } from 'react-native';
+import { addTask, deleteTask, updateTask, getTasks } from '../services/db';
 
 export type Priority = 'low' | 'medium' | 'high';
 
@@ -24,8 +25,6 @@ interface TodoContextType {
 
 const TodoContext = createContext<TodoContextType | undefined>(undefined);
 
-const API_URL = 'https://dummyjson.com/todos';
-
 export function TodoProvider({ children }: { children: React.ReactNode }) {
     const [todos, setTodos] = useState<Todo[]>([]);
     const [loading, setLoading] = useState(true);
@@ -38,39 +37,45 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
     const fetchTodos = async () => {
         try {
             setLoading(true);
-            const response = await fetch(API_URL);
-            const data = await response.json();
-            const enrichedTodos = data.todos.map((todo: any) => ({
-                ...todo,
-                priority: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)] as Priority,
-                date: new Date().toLocaleDateString(),
-            }));
-            setTodos(enrichedTodos);
+            const data = await getTasks();
+            setTodos(data);
         } catch (error) {
-            Alert.alert('Error', 'Failed to fetch todos');
+            Alert.alert('Error', 'Failed to fetch todos from database');
         } finally {
             setLoading(false);
         }
     };
 
-    const addTodo = (todo: string, date: string, priority: Priority) => {
-        const newTodo: Todo = {
-            id: Date.now(),
-            todo,
-            completed: false,
-            priority,
-            date,
-        };
-        setTodos([newTodo, ...todos]);
+    const addTodo = async (todo: string, date: string, priority: Priority) => {
+        try {
+            const newTodo = await addTask(todo, date, priority);
+            setTodos([newTodo, ...todos]);
+        } catch (error) {
+            console.error("Error adding task:", error);
+        }
     };
 
-    const toggleTodo = (id: number) => {
-        setTodos(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+    const toggleTodo = async (id: number) => {
+        const todo = todos.find(t => t.id === id);
+        if (todo) {
+            const updatedTodo = { ...todo, completed: !todo.completed };
+            try {
+                await updateTask(updatedTodo);
+                setTodos(prev => prev.map(t => t.id === id ? updatedTodo : t));
+            } catch (error) {
+                console.error("Error updating task:", error);
+            }
+        }
     };
 
-    const deleteTodo = (id: number) => {
-        setTodos(prev => prev.filter(t => t.id !== id));
-        if (selectedTodoId === id) setSelectedTodoId(null);
+    const deleteTodo = async (id: number) => {
+        try {
+            await deleteTask(id);
+            setTodos(prev => prev.filter(t => t.id !== id));
+            if (selectedTodoId === id) setSelectedTodoId(null);
+        } catch (error) {
+            console.error("Error deleting task:", error);
+        }
     };
 
     return (
