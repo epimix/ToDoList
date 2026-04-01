@@ -1,13 +1,12 @@
-import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import {
+    ScrollView,
     StyleSheet,
     Text,
-    View,
     TextInput,
     TouchableOpacity,
-    ScrollView,
+    View,
 } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
 import { Priority } from '../models/Todo';
 
 interface FormData {
@@ -51,15 +50,17 @@ export const TodoForm = ({ onSubmit }: TodoFormProps) => {
                     rules={{ required: 'Назва обовʼязкова' }}
                     render={({ field: { onChange, onBlur, value } }) => (
                         <TextInput
-                            style={styles.input}
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                            placeholder="Що потрібно зробити?"
-                            multiline
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder="Що потрібно зробити?"
+                        multiline
+                        testID='todo'
                         />
                     )}
                     name="todo"
+                    
                 />
                 {errors.todo && <Text style={styles.errorText}>{errors.todo.message}</Text>}
             </View>
@@ -100,7 +101,7 @@ export const TodoForm = ({ onSubmit }: TodoFormProps) => {
                 </View>
             </View>
 
-            <TouchableOpacity style={styles.submitButton} onPress={handleSubmit(onSubmit)}>
+            <TouchableOpacity testID="submit" style={styles.submitButton} onPress={handleSubmit(onSubmit)}>
                 <Text style={styles.submitButtonText}>Створити завдання</Text>
             </TouchableOpacity>
         </ScrollView>
